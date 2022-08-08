@@ -60,4 +60,41 @@ mod test {
             panic!("Cannot tokenize float literal")
         };
     }
+    #[test]
+    pub fn identifier_or_keywords() {
+        let test_identifier = "thisisaname";
+        let mut tokenizer = Tokenizer::new(test_identifier);
+
+        if let Token::Identifier(x) = tokenizer
+            .lex_next_token()
+            .expect("Cannot parse single token")
+        {
+            assert_eq!(x, "thisisaname");
+            // println!("{}", x);
+        } else {
+            panic!("Cannot lex identifiers");
+        }
+
+        let test_keywords = vec!["var", "if", "then"];
+        let mut result_keywords: Vec<String> = vec![];
+        for keyword in &test_keywords {
+            let keyword = keyword.to_string();
+            let tok = Tokenizer::new(&keyword)
+                .lex_next_token()
+                .unwrap()
+                .to_string();
+            result_keywords.push(tok);
+        }
+        assert_eq!(result_keywords, test_keywords);
+
+        let test_keyword_inside_identifier = "varasdf";
+        let tok = Tokenizer::new(&test_keyword_inside_identifier)
+            .lex_next_token()
+            .unwrap();
+        if let Token::Identifier(x) = tok {
+            assert_eq!(x, test_keyword_inside_identifier);
+        } else {
+            panic!("Lex identifier");
+        }
+    }
 }
