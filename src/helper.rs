@@ -57,17 +57,16 @@ pub fn tokenize_ident(input: &str) -> Result<Token, DuYError> {
 pub fn tokenize_number_literals(input: &str) -> Result<Token, DuYError> {
     let mut result = String::from("");
 
-    if result.matches(".").count() == 1 {
-        let mut result_float = String::from("");
-        for char in result.chars() {
+    if input.matches(".").count() == 1 {
+        for char in input.chars() {
             if char.is_digit(10) || char == ".".chars().nth(0).unwrap() {
-                result_float.push(char)
+                result.push(char)
             } else {
                 return Err(DuYError::InvalidToken);
             }
         }
-        return Ok(Token::FloatLiteral(result_float.parse::<f64>().unwrap()));
-    } else if !result.contains(".") {
+        return Ok(Token::FloatLiteral(result.parse::<f64>().unwrap()));
+    } else if !input.contains(".") {
         for char in input.chars() {
             if char.is_digit(10) {
                 result.push(char)
