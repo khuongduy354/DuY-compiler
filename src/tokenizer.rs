@@ -76,10 +76,12 @@ impl Tokenizer {
                 let mut look_ahead = self.look_ahead(temp.len());
 
                 //While not EOF or is number => push to words
-                if let Some(next) = look_ahead {
-                    while next.is_numeric() || next == '.' {
+                while let Some(next) = look_ahead {
+                    if next.is_numeric() || next == '.' {
                         temp.push(next);
                         look_ahead = self.look_ahead(temp.len());
+                    } else {
+                        break;
                     }
                 }
 
@@ -96,10 +98,12 @@ impl Tokenizer {
                 let mut look_ahead = self.look_ahead(temp.len());
 
                 //While not EOF or is letters => push to words
-                if let Some(next) = look_ahead {
-                    while next.is_alphanumeric() || next == '_' {
+                while let Some(next) = look_ahead {
+                    if next.is_alphanumeric() || next == '_' {
                         temp.push(next);
                         look_ahead = self.look_ahead(temp.len());
+                    } else {
+                        break;
                     }
                 }
                 //create token from that temp
