@@ -30,26 +30,30 @@ impl Tokenizer {
             '*' => tok = Token::Mul,
             ';' => tok = Token::SemiColon,
             '^' => tok = Token::Pow,
+
+            '=' => tok = Token::Eq,
+            '/' => tok = Token::Div,
+
+            '^' => tok = Token::Pow,
+            ';' => tok = Token::SemiColon,
+
+            // multiple tokens
             '<' => match self.look_ahead(1) {
-                '=' => tok = Token::LessEq,
-                '>' => tok = Token::Neq,
+                Some('=') => tok = Token::LessEq,
+                Some('>') => tok = Token::Neq,
                 _ => tok = Token::Less,
             },
             '>' => match self.look_ahead(1) {
-                '=' => tok = Token::GreatEq,
+                Some('=') => tok = Token::GreatEq,
                 _ => tok = Token::Great,
             },
-            '=' => tok = Token::Eq,
             ':' => match self.look_ahead(1) {
-                '=' => {
+                Some('=') => {
                     tok = Token::Assign;
                     self.move_on(1);
                 }
                 _ => return Err(DuYError::InvalidToken),
             },
-            '^' => tok = Token::Pow,
-            ';' => tok = Token::SemiColon,
-
             //string literal
             '\'' => {
                 let final_pos = self.find_string_colon(self.pos + 1, '\'');
@@ -63,42 +67,50 @@ impl Tokenizer {
                     return Err(DuYError::InvalidToken);
                 }
             }
-            //number literal TODO: refractor look ahead on condition;
+            //number literal
             '0'..='9' => {
-                let mut i = 1;
-                let mut next = self.look_ahead(i);
-                let mut word = self.current_char.to_string();
-                while next.is_numeric() || next == '.' {
-                    word.push(next);
-                    i += 1;
-                    next = self.look_ahead(i);
+                //temporary, to hold number literal
+                let mut temp = self.current_char.to_string();
+
+                // look next position
+                let mut look_ahead = self.look_ahead(temp.len());
+
+                //While not EOF or is number => push to words
+                if let Some(next) = look_ahead {
+                    while next.is_numeric() || next == '.' {
+                        temp.push(next);
+                        look_ahead = self.look_ahead(temp.len());
+                    }
                 }
-                tok = helper::tokenize_number_literals(&word)?;
-                self.move_on(word.len() - 1);
+
+                //create token from that temp
+                tok = helper::tokenize_number_literals(&temp)?;
+                self.move_on(temp.len() - 1);
             }
 
             //identifier or keyword
             c if c.is_alphanumeric() || c == '_' => {
-                let mut i = 1;
-                let mut next = self.look_ahead(i);
-                let mut word = self.current_char.to_string();
-                while next.is_alphanumeric() || next == '_' {
-                    word.push(next);
-                    i += 1;
-                    if !self.pos_over_end(self.pos + i) {
-                        next = self.look_ahead(i);
-                    } else {
-                        break;
+                //placeholder for indentifier or keyword
+                let mut temp = self.current_char.to_string();
+                // look into next position
+                let mut look_ahead = self.look_ahead(temp.len());
+
+                //While not EOF or is letters => push to words
+                if let Some(next) = look_ahead {
+                    while next.is_alphanumeric() || next == '_' {
+                        temp.push(next);
+                        look_ahead = self.look_ahead(temp.len());
                     }
                 }
-                if let Some(_tok) = tokenize_keyword(&word) {
+                //create token from that temp
+                if let Some(_tok) = tokenize_keyword(&temp) {
                     tok = _tok;
                 } else {
-                    tok = helper::tokenize_ident(&word)?;
+                    tok = helper::tokenize_ident(&temp)?;
                 }
-                self.move_on(word.len() - 1);
+
+                self.move_on(temp.len() - 1);
             }
-            '/' => tok = Token::Div,
             '{' => {
                 let steps_to_skip =
                     skip_comments(&self.src[self.pos..].into_iter().collect::<String>());
@@ -116,6 +128,7 @@ impl Tokenizer {
         Ok(tok)
     }
 
+    ///move to next non whitespace char
     pub fn move_on(&mut self, step: usize) {
         //move to next non whitespace
         let mut temp_pos = self.pos + step;
@@ -134,9 +147,13 @@ impl Tokenizer {
     }
 
     /// return char in the next n position
-    pub fn look_ahead(&mut self, n: usize) -> char {
+    pub fn look_ahead(&mut self, n: usize) -> Option<char> {
         let ahead_pos = self.pos + n;
-        self.src[ahead_pos]
+        if self.pos_over_end(ahead_pos) {
+            return None;
+        }
+
+        Some(self.src[ahead_pos])
     }
 
     pub fn next_white_space(&mut self) -> usize {
