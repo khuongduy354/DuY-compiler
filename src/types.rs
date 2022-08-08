@@ -1,3 +1,4 @@
+use core::fmt;
 use std::fmt::Display;
 #[derive(Debug)]
 pub enum Token {
@@ -12,6 +13,15 @@ pub enum Token {
     Function,
     Begin,
     End,
+
+    //Builtin functions
+    Write,
+    Read,
+    Sqrt,
+    Abs,
+    Sort,
+    Len,
+    Endl,
 
     SemiColon, // ;
     Comment,   // // or {}
@@ -43,15 +53,6 @@ pub enum Token {
     String,
     Array(i64),
 
-    //Builtin functions
-    Write,
-    Read,
-    Sqrt,
-    Abs,
-    Sort,
-    Len,
-    Endl,
-
     //identifer
     Identifier(String), //function, variable names
 
@@ -66,6 +67,16 @@ impl Token {
         match self {
             Token::WhiteSpace => true,
             _ => false,
+        }
+    }
+}
+impl fmt::Display for Token {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match *self {
+            Token::Var => write!(f, "var"),
+            Token::If => write!(f, "if"),
+            Token::Then => write!(f, "then"),
+            _ => write!(f, "{:#?}", self),
         }
     }
 }
