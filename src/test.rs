@@ -97,4 +97,26 @@ mod test {
             panic!("Lex identifier");
         }
     }
+
+    #[test]
+    pub fn comments() {
+        let test_inp = "{this is a comment} var a:=1;";
+        let result_toks = vec![
+            Token::Comment,
+            Token::Var,
+            Token::Identifier("a".to_string()),
+            Token::Assign,
+            Token::IntegerLiteral(1),
+        ];
+
+        let mut tokenizer = Tokenizer::new(&test_inp);
+        let toks = tokenizer
+            .tokenize_full_src()
+            .expect("Cannot parse single token");
+
+        for i in 0..result_toks.len() {
+            // println!("{}", toks[i]);
+            assert_eq!(toks[i], result_toks[i]);
+        }
+    }
 }

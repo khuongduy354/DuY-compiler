@@ -6,9 +6,6 @@ An Interpreter for Pascal programming language written in Rust, that alternate t
 
 [] tests for tokenizer
 
-- single tokens
-- <,>, = ,:=,
-- string,number literals
 - identifier , keyword
 - comments
 
