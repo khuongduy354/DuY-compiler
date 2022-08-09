@@ -1,6 +1,6 @@
 use core::fmt;
 use std::fmt::Display;
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Token {
     // keywords
     Var,
@@ -70,6 +70,7 @@ impl Token {
         }
     }
 }
+
 impl fmt::Display for Token {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
@@ -80,3 +81,8 @@ impl fmt::Display for Token {
         }
     }
 }
+// impl PartialEq for Token {
+//     fn eq(&self, other: &Token) -> bool {
+//         self.to_string() == other.to_string()
+//     }
+// }
