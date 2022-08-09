@@ -1,5 +1,4 @@
 use core::fmt;
-use std::fmt::Display;
 #[derive(Debug, PartialEq)]
 pub enum Token {
     // keywords
@@ -32,16 +31,6 @@ pub enum Token {
     //TODO: add array square brackets
 
     // operators
-    Plus,    // +
-    Minus,   // -
-    Mul,     // *
-    Assign,  // :=
-    Div,     // div
-    Mod,     // mod
-    Pow,     // ^
-    And,     // and
-    Or,      // or
-    Not,     // not
     Plus,   // +
     Minus,  // -
     Mul,    // *
@@ -53,25 +42,8 @@ pub enum Token {
 
     And, // and
     Or,  // or
-    Not, // not
-    Neq,     // <>
-    Eq,      // =
-    Less,    // <
-    LessEq,  // <=
-    Great,   // >
-    GreatEq, // >=
-
-    //Data Types
-    Integer,
-    Float,
-    Boolean,
-    String,
-    Array(i64),
-
-    //identifer
-    Identifier(String), //function, variable names
-
     // literals
+    Identifier(String),
     StringLiteral(String), //string value
     IntegerLiteral(i64),   //number value
     FloatLiteral(f64),     //number value
@@ -123,13 +95,6 @@ impl Clone for Token {
             Token::Pow => Token::Pow,
             Token::And => Token::And,
             Token::Or => Token::Or,
-            Token::Not => Token::Not,
-            Token::Neq => Token::Neq,
-            Token::Eq => Token::Eq,
-            Token::Less => Token::Less,
-            Token::LessEq => Token::LessEq,
-            Token::Great => Token::Great,
-            Token::GreatEq => Token::GreatEq,
             Token::EOF => Token::EOF,
             Token::SemiColon => Token::SemiColon,
             Token::Comment => Token::Comment,
@@ -148,11 +113,7 @@ impl fmt::Display for Token {
         }
     }
 }
-// impl PartialEq for Token {
-//     fn eq(&self, other: &Token) -> bool {
-//         self.to_string() == other.to_string()
-//     }
-// }
+
 struct StringLiteral();
 //TODO: refractor to be more precise
 pub enum Expr {
