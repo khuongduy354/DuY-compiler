@@ -86,7 +86,7 @@ impl Tokenizer {
                 }
 
                 //create token from that temp
-                tok = helper::tokenize_number_literals(&temp)?;
+            tok = helper::tokenize_number_literals(&temp)?;
                 self.move_on(temp.len() - 1);
             }
 
@@ -107,7 +107,7 @@ impl Tokenizer {
                     }
                 }
                 //create token from that temp
-                if let Some(_tok) = tokenize_keyword(&temp) {
+            if let Some(_tok) = tokenize_keyword(&temp) {
                     tok = _tok;
                 } else {
                     tok = helper::tokenize_ident(&temp)?;
@@ -115,6 +115,7 @@ impl Tokenizer {
 
                 self.move_on(temp.len() - 1);
             }
+
             '{' => {
                 let steps_to_skip =
                     skip_comments(&self.src[self.pos..].into_iter().collect::<String>());
