@@ -153,3 +153,11 @@ impl fmt::Display for Token {
 //         self.to_string() == other.to_string()
 //     }
 // }
+struct StringLiteral();
+//TODO: refractor to be more precise
+pub enum Expr {
+    Unary((Token, Box<Expr>)),
+    Binary((Box<Expr>, Token, Box<Expr>)),
+    Literals(Token),
+    Grouping(Box<Expr>),
+}
