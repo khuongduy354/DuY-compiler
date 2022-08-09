@@ -35,17 +35,11 @@ impl Parser {
     }
 
     fn get_current<'a>(&self) -> Option<Token> {
-        if self.current > self.src.len() {
-            None
-        } else {
-            Some(self.src[self.current].clone())
-        }
+        self.src.get(self.current).to_owned()
     }
 
     fn move_on(&mut self) {
-        if !self.is_at_end() {
-            self.current += 1;
-        }
+        self.current += 1;
     }
 
     fn match_types_vec(x: &Token, inp: &Vec<Token>) -> bool {
