@@ -42,6 +42,15 @@ pub enum Token {
 
     And, // and
     Or,  // or
+    Not,
+
+    Eq,
+    Neq,
+    Great,
+    GreatEq,
+    Less,
+    LessEq,
+
     // literals
     Identifier(String),
     StringLiteral(String), //string value
@@ -99,6 +108,13 @@ impl Clone for Token {
             Token::SemiColon => Token::SemiColon,
             Token::Comment => Token::Comment,
             Token::WhiteSpace => Token::WhiteSpace,
+            Token::Not => Token::Not,
+            Token::Eq => Token::Eq,
+            Token::Neq => Token::Neq,
+            Token::Great => Token::Great,
+            Token::GreatEq => Token::GreatEq,
+            Token::Less => Token::Less,
+            Token::LessEq => Token::LessEq,
         }
     }
 }
@@ -121,4 +137,19 @@ pub enum Expr {
     Binary((Box<Expr>, Token, Box<Expr>)),
     Literals(Token),
     Grouping(Box<Expr>),
+}
+
+impl Expr {
+    fn print_ast(&self) {
+        match self {
+            Expr::Unary((ops, expr)) => expr.print_ast(),
+            Expr::Binary((lhs, ops, rhs)) => {
+                println!("{}", ops);
+                lhs.print_ast();
+                rhs.print_ast();
+            }
+            Expr::Grouping(expr) => expr.print_ast(),
+            Expr::Literals(value) => print!("{} ", value),
+        }
+    }
 }
