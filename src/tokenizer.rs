@@ -30,7 +30,9 @@ impl Tokenizer {
             '*' => tok = Token::Mul,
             ';' => tok = Token::SemiColon,
             '^' => tok = Token::Pow,
-
+            '!' => tok = Token::Not,
+            '|' => tok = Token::Or,
+            '&' => tok = Token::And,
             '=' => tok = Token::Eq,
             '/' => tok = Token::Div,
 
@@ -109,7 +111,11 @@ impl Tokenizer {
                     }
                 }
                 //create token from that temp
-                if let Some(_tok) = tokenize_keyword(&temp) {
+                if temp == "true" {
+                    tok = Token::BooleanLiteral(true)
+                } else if temp == "false" {
+                    tok = Token::BooleanLiteral(false)
+                } else if let Some(_tok) = tokenize_keyword(&temp) {
                     tok = _tok;
                 } else {
                     tok = helper::tokenize_ident(&temp)?;

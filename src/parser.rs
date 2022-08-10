@@ -5,6 +5,7 @@ use crate::{
 
 // ```Java
 // expression     → equality ;
+// boolean        ->  equality && equality  , left associate
 // equality       → comparison ( ( "!=" | "==" ) comparison )* ;
 // comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
 // term           → factor ( ( "-" | "+" ) factor )* ;
@@ -81,7 +82,7 @@ impl Parser {
     }
 
     fn unary(&mut self) -> Box<Expr> {
-        let term_tokens = vec![Token::Not, Token::And, Token::Or];
+        let term_tokens = vec![Token::Not, Token::Minus];
 
         //we consume consecutive unary
         while let Some(x) = self.get_current() {
@@ -185,8 +186,4 @@ impl Parser {
         }
         expr
     }
-
-    // take lhs comparison
-    // compare using the == or != sign
-    // take rhs comparison
 }
