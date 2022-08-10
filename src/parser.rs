@@ -35,7 +35,11 @@ impl Parser {
     }
 
     fn get_current<'a>(&self) -> Option<Token> {
-        self.src.get(self.current).to_owned()
+        if let Some(tok) = self.src.get(self.current).to_owned() {
+            Some(tok.to_owned())
+        } else {
+            None
+        }
     }
 
     fn move_on(&mut self) {
@@ -50,21 +54,28 @@ impl Parser {
         }
         false
     }
+    // find and return content in interval (current,target)
 
     // Recursive Descent Grammar
-    fn primary(&mut self) -> Result<Box<Expr>, DuYError> {
-        let current = self.get_current();
-        if let Some(x) = current {
-            match x {
-                Token::BooleanLiteral(_b) => Ok(Box::new(Expr::Literals(x))),
-                Token::StringLiteral(_b) => Ok(Box::new(Expr::Literals(Token::StringLiteral(_b)))),
-                Token::IntegerLiteral(_b) => Ok(Box::new(Expr::Literals(x))),
-                Token::FloatLiteral(_b) => Ok(Box::new(Expr::Literals(x))),
-                Token::Identifier(_b) => Ok(Box::new(Expr::Literals(Token::Identifier(_b)))),
-                _ => Err(DuYError::InvalidToken),
+    fn primary(&mut self) -> Box<Expr> {
+        let x = self.get_current().expect("Expected expression");
+        match x {
+            Token::BooleanLiteral(_b) => Box::new(Expr::Literals(x)),
+            Token::StringLiteral(_b) => Box::new(Expr::Literals(Token::StringLiteral(_b))),
+            Token::IntegerLiteral(_b) => Box::new(Expr::Literals(x)),
+            Token::FloatLiteral(_b) => Box::new(Expr::Literals(x)),
+            Token::Identifier(_b) => Box::new(Expr::Literals(Token::Identifier(_b))),
+            Token::OParen => {
+                let end_pos = self
+                    .src
+                    .iter()
+                    .enumerate()
+                    .position(|(index, x)| *x == Token::CParen && index > self.current)
+                    .expect("Closed parenthesis expected");
+                let expr = self.expression();
+                return Box::new(Expr::Grouping(expr));
             }
-        } else {
-            Err(DuYError::InvalidToken)
+            _ => panic!("Expected expression"),
         }
     }
 
@@ -82,7 +93,7 @@ impl Parser {
         }
         //if we break the loop, means we get to highest precedence
         // which is primary
-        self.primary().expect("Need an expression")
+        self.primary()
     }
 
     fn power(&mut self) -> Box<Expr> {
