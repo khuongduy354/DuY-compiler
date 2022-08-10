@@ -121,10 +121,14 @@ impl Clone for Token {
 
 impl fmt::Display for Token {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match *self {
+        match self {
             Token::Var => write!(f, "var"),
             Token::If => write!(f, "if"),
             Token::Then => write!(f, "then"),
+            Token::IntegerLiteral(i) => write!(f, "{}", i),
+            Token::FloatLiteral(fl) => write!(f, "{}", fl),
+            Token::StringLiteral(s) => write!(f, "{}", s),
+            Token::BooleanLiteral(b) => write!(f, "{}", b),
             _ => write!(f, "{:#?}", self),
         }
     }
@@ -132,6 +136,7 @@ impl fmt::Display for Token {
 
 struct StringLiteral();
 //TODO: refractor to be more precise
+#[derive(Debug)]
 pub enum Expr {
     Unary((Token, Box<Expr>)),
     Binary((Box<Expr>, Token, Box<Expr>)),
@@ -139,17 +144,25 @@ pub enum Expr {
     Grouping(Box<Expr>),
 }
 
-impl Expr {
-    fn print_ast(&self) {
+impl fmt::Display for Expr {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Expr::Unary((ops, expr)) => expr.print_ast(),
-            Expr::Binary((lhs, ops, rhs)) => {
-                println!("{}", ops);
-                lhs.print_ast();
-                rhs.print_ast();
-            }
-            Expr::Grouping(expr) => expr.print_ast(),
-            Expr::Literals(value) => print!("{} ", value),
+            Expr::Unary((t, e)) => write!(f, "{} {}", t, e),
+            Expr::Binary((l, t, r)) => write!(f, "{} {} {}", l, t, r),
+            Expr::Literals(t) => write!(f, "{}", t),
+            Expr::Grouping(e) => write!(f, "({})", e),
         }
     }
+    // fn print_ast(&self) {
+    //     match self {
+    //         Expr::Unary((ops, expr)) => expr.print_ast(),
+    //         Expr::Binary((lhs, ops, rhs)) => {
+    //             println!("{}", ops);
+    //             lhs.print_ast();
+    //             rhs.print_ast();
+    //         }
+    //         Expr::Grouping(expr) => expr.print_ast(),
+    //         Expr::Literals(value) => print!("{} ", value),
+    //     }
+    // }
 }

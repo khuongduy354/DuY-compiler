@@ -1,6 +1,8 @@
 use parser::Parser;
 use tokenizer::Tokenizer;
 
+use crate::types::Token;
+
 // mod error;
 mod error;
 mod helper;
@@ -18,5 +20,6 @@ fn main() {
 
     let mut parser = Parser::new(result_vec);
     let expr = parser.expression();
-    println!("{}", expr);
+    print!("{}", expr);
+    // print!("{}", Token::While);
 }
