@@ -22,11 +22,11 @@ pub struct Parser {
 }
 
 impl Parser {
-    fn new(src: Vec<Token>) -> Self {
+    pub fn new(src: Vec<Token>) -> Self {
         Parser { src, current: 0 }
     }
 
-    fn expression(&mut self) -> Box<Expr> {
+    pub fn expression(&mut self) -> Box<Expr> {
         self.equality()
     }
 
@@ -59,6 +59,7 @@ impl Parser {
     // Recursive Descent Grammar
     fn primary(&mut self) -> Box<Expr> {
         let x = self.get_current().expect("Expected expression");
+        self.move_on();
         match x {
             Token::BooleanLiteral(_b) => Box::new(Expr::Literals(x)),
             Token::StringLiteral(_b) => Box::new(Expr::Literals(Token::StringLiteral(_b))),
@@ -66,13 +67,13 @@ impl Parser {
             Token::FloatLiteral(_b) => Box::new(Expr::Literals(x)),
             Token::Identifier(_b) => Box::new(Expr::Literals(Token::Identifier(_b))),
             Token::OParen => {
-                let end_pos = self
-                    .src
+                self.src
                     .iter()
                     .enumerate()
-                    .position(|(index, x)| *x == Token::CParen && index > self.current)
+                    .position(|(index, x)| *x == Token::CParen && index >= self.current)
                     .expect("Closed parenthesis expected");
                 let expr = self.expression();
+                self.move_on(); //move out of Closed parenthesis
                 return Box::new(Expr::Grouping(expr));
             }
             _ => panic!("Expected expression"),
@@ -85,6 +86,7 @@ impl Parser {
         //we consume consecutive unary
         while let Some(x) = self.get_current() {
             if Parser::match_types_vec(&x, &term_tokens) {
+                self.move_on();
                 let expr = self.unary();
                 return Box::new(Expr::Unary((x, expr)));
             } else {
@@ -103,9 +105,9 @@ impl Parser {
 
         while let Some(x) = self.get_current() {
             if Parser::match_types_vec(&x, &term_tokens) {
+                self.move_on();
                 let rhs = self.unary();
                 expr = Box::new(Expr::Binary((expr, x, rhs)));
-                self.move_on();
             } else {
                 break;
             }
@@ -120,9 +122,9 @@ impl Parser {
 
         while let Some(x) = self.get_current() {
             if Parser::match_types_vec(&x, &term_tokens) {
+                self.move_on();
                 let rhs = self.power();
                 expr = Box::new(Expr::Binary((expr, x, rhs)));
-                self.move_on();
             } else {
                 break;
             }
@@ -136,9 +138,9 @@ impl Parser {
 
         while let Some(x) = self.get_current() {
             if Parser::match_types_vec(&x, &term_tokens) {
+                self.move_on();
                 let rhs = self.factor();
                 expr = Box::new(Expr::Binary((expr, x, rhs)));
-                self.move_on();
             } else {
                 break;
             }
@@ -153,9 +155,9 @@ impl Parser {
 
         while let Some(x) = self.get_current() {
             if Parser::match_types_vec(&x, &comparison_tokens) {
+                self.move_on();
                 let rhs = self.term();
                 expr = Box::new(Expr::Binary((expr, x, rhs)));
-                self.move_on();
             } else {
                 break;
             }
@@ -171,12 +173,12 @@ impl Parser {
         //consuming all ai, til all == are parsed or EOF
         while let Some(x) = self.get_current() {
             if Parser::match_types_vec(&x, &vec![Token::Eq, Token::Neq]) {
+                self.move_on();
                 //comparison is next higher order
                 let rhs = self.comparison();
 
                 //consume into original expr
                 expr = Box::new(Expr::Binary((expr, x, rhs)));
-                self.move_on();
             } else {
                 break;
             }

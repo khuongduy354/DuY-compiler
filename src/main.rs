@@ -1,18 +1,22 @@
+use parser::Parser;
 use tokenizer::Tokenizer;
 
 // mod error;
 mod error;
 mod helper;
+mod parser;
 mod test;
 mod tokenizer;
 mod types;
 
 fn main() {
-    // src = "full code"
-    // tokens_vec = tokenizer::new(src).tokenize_full_src
+    let test_str = String::from("(1+2)*3");
 
-    let test_str = String::from(" var abcx :=12345; {123456}");
     let mut tokenizer = Tokenizer::new(&test_str);
     let result_vec = tokenizer.tokenize_full_src().unwrap();
-    result_vec.iter().for_each(|x| println!("{:?}", x));
+    // println!("{:?}", result_vec);
+
+    let mut parser = Parser::new(result_vec);
+    let expr = parser.expression();
+    println!("{}", expr);
 }
