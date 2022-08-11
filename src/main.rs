@@ -12,7 +12,9 @@ mod tokenizer;
 mod types;
 
 fn main() {
-    let test_str = String::from("(1+2)*3");
+    let test_str = String::from("(1+2)*3+5*6+8^3/23+1312");
+    // let test_str = String::from("--1");
+    // let test_str = String::from("(1+2)*3");
 
     let mut tokenizer = Tokenizer::new(&test_str);
     let result_vec = tokenizer.tokenize_full_src().unwrap();
@@ -20,6 +22,8 @@ fn main() {
 
     let mut parser = Parser::new(result_vec);
     let expr = parser.expression();
-    print!("{}", expr);
+    // print!("{}", expr);
+    let evaluated = expr.eval();
+    println!("{}", evaluated);
     // print!("{}", Token::While);
 }
