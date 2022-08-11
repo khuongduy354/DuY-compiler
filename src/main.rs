@@ -1,8 +1,6 @@
 use parser::Parser;
 use tokenizer::Tokenizer;
 
-use crate::types::Token;
-
 // mod error;
 mod error;
 mod helper;

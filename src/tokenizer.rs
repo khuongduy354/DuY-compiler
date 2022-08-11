@@ -1,6 +1,7 @@
 use crate::helper::{self, skip_comments, tokenize_keyword, tokenize_string_literals};
 
-use crate::{error::DuYError, types::Token};
+use crate::error::DuYError;
+use crate::types::Token;
 
 pub struct Tokenizer {
     pos: usize,

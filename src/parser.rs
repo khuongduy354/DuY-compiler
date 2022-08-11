@@ -1,8 +1,4 @@
-use crate::{
-    error::DuYError,
-    types::{Expr, Token},
-};
-
+use crate::types::{Expr, Token};
 // ```Java
 // expression     → equality ;
 // boolean        ->  equality && equality  , left associate
