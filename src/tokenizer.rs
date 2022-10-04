@@ -191,7 +191,7 @@ impl Tokenizer {
                 result.push(tok);
             }
         }
-result.push(Token::EOF); 
+        result.push(Token::EOF);
         Ok(result)
     }
 

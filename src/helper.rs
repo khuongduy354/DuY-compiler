@@ -26,6 +26,14 @@ pub fn tokenize_keyword(input: &str) -> Option<Token> {
         "endl" => Some(Token::Endl),
         "true" => Some(Token::BooleanLiteral(true)),
         "false" => Some(Token::BooleanLiteral(false)),
+
+        "write" => Some(Token::Write),
+        "read" => Some(Token::Read),
+        "sqrt" => Some(Token::Sqrt),
+        "abs" => Some(Token::Abs),
+        "sort" => Some(Token::Sort),
+        "len" => Some(Token::Len),
+        "endl" => Some(Token::Endl),
         _ => None,
     }
 }

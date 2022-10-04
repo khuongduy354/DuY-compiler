@@ -5,14 +5,13 @@ An Interpreter for Pascal programming language written in Rust, that alternate t
 # Todo
 
 [x] tests for tokenizer
-[x] parser
-<!-- [] boolean opeartors -->
-
-- Tokenizer DONE is DONE, no need to improve cuz lots of string manipulation
+[x] evaluating expressions  
+[] parse into some basic statements 
+[] add functionalities to these statements  
 
 # Learned
 - It's hard to clone an enum 
-- Enum instance, Token::IntegerLiteral for example, 
+-> Enum instance, Token::IntegerLiteral for example, 
 only known at runtime, and cannot be seen as a type, only Token is the type
 
 - To evaluate expression:
@@ -31,3 +30,10 @@ Token + Token, match and return result
 
 e.g https://craftinginterpreters.com/evaluating-expressions.html#evaluating-unary-expressions
 <!-- => https://doc.rust-lang.org/book/ch19-04-advanced-types.html for types handling  -->
+# Kinds of statements  
+var a = 1;  statement 
+if () then begin end else begin end 
+while (exp) do   statements
+for (expr) do statements 
+function_call(expr)   
+
