@@ -41,7 +41,7 @@ impl Expr {
             Expr::Literals(value) => match value {
                 Token::IntegerLiteral(i) => Token::IntegerLiteral(*i),
                 Token::FloatLiteral(f) => Token::FloatLiteral(*f),
-                // Token::StringLiteral(s) => s,
+                Token::StringLiteral(s) => Token::StringLiteral(s.clone()),
                 Token::BooleanLiteral(b) => Token::BooleanLiteral(*b),
                 _ => panic!("Unsupported literal"),
             },
