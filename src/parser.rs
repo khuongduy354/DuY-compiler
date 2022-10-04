@@ -68,7 +68,7 @@ impl Parser {
     fn match_tok_in_order(&self, toks: Vec<Token>) -> bool {
         let size = toks.len();
         for i in 0..size {
-            if self.peek(i) != toks[i] {
+            if std::mem::discriminant(&self.peek(i)) != std::mem::discriminant(&toks[i]) {
                 return false;
             }
         }
