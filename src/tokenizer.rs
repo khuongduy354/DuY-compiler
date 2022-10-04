@@ -136,6 +136,7 @@ impl Tokenizer {
                 }
             }
             a if a.is_whitespace() => tok = Token::WhiteSpace,
+
             _ => return Err(DuYError::InvalidToken),
         }
         self.move_on(1);
@@ -190,6 +191,7 @@ impl Tokenizer {
                 result.push(tok);
             }
         }
+result.push(Token::EOF); 
         Ok(result)
     }
 
